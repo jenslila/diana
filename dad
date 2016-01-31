@@ -1,14 +1,13 @@
 #!/bin/sh
-# vim: ts=8 et sw=4 sts=4 guioptions= modeline
 
 usage() {
     printf '%s [-h|-d DOWNLOAD_DIR|-s SECRET_TOKEN|-u USERNAME|-p PASSWORD] start|stop\n' "${0##*/}"
 }
 
-download_dir = ${DIANA_DOWNLOAD_DIR:-${XDG_DOWNLOAD_DIR:-${HOME}}}
-secret_token = $DIANA_SECRET_TOKEN
-username = ''
-password = ''
+download_dir=${DIANA_DOWNLOAD_DIR:-${XDG_DOWNLOAD_DIR:-${HOME}}}
+secret_token=$DIANA_SECRET_TOKEN
+username=''
+password=''
 
 while getopts 'hd:s:u:p:' opt ; do
     case "$opt" in
@@ -38,7 +37,7 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-daemon_pid = '/tmp/diana-daemon.pid'
+daemon_pid='/tmp/diana-daemon.pid'
 
 case "$1" in
     start)
@@ -47,15 +46,15 @@ case "$1" in
             exit 1
         fi
 
-        XDG_DATA_HOME = ${XDG_DATA_HOME:-${HOME}/.local/share}
-        diana_session = ${XDG_DATA_HOME}/diana.session
+        XDG_DATA_HOME=${XDG_DATA_HOME:-${HOME}/.local/share}
+        diana_session=${XDG_DATA_HOME}/diana.session
 
         [ ! -e "$diana_session" ] && touch "$diana_session"
 
-        args = '--daemon --enable-rpc --continue'
-        [ -n "$secret_token" ] && args = "$args --rpc-secret $secret_token"
-        [ -n "$username" ] && args = "$args --rpc-user $username"
-        [ -n "$password" ] && args = "$args --rpc-passwd $password"
+        args='--daemon --enable-rpc --continue'
+        [ -n "$secret_token" ] && args="$args --rpc-secret $secret_token"
+        [ -n "$username" ] && args="$args --rpc-user $username"
+        [ -n "$password" ] && args="$args --rpc-passwd $password"
 
         aria2c $args --dir "$download_dir" --input-file "$diana_session" --save-session "$diana_session"
 
